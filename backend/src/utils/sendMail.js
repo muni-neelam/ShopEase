@@ -21,7 +21,7 @@ const sendWelcomeEmail = async (userEmail, userName) => {
         <p>You can now log in and start exploring all the features we’ve built for you.</p>
         
         <br/>
-        <a href="https://shop-ease.com/login" 
+        <a href="https://shop-ease-eight-virid.vercel.app/signin" 
            style="background:#4CAF50;color:white;padding:10px 18px;text-decoration:none;border-radius:5px;">
            Login to Your Account
         </a>

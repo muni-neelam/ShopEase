@@ -2,10 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
 import apiUrl from "../../apiUrl.json";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import { Pagination, Autoplay } from "swiper/modules";
 import Banner from "../components/Banner";
 
 const Home = () => {
@@ -20,196 +16,544 @@ const Home = () => {
         console.log(err);
       }
     };
+
     fetchFeatured();
   }, []);
 
-  // Flash Sale Timer Logic
-  const FlashSale = () => {
-    const [timeLeft, setTimeLeft] = useState({
-      hours: 0,
-      minutes: 0,
-      seconds: 0,
-    });
+  return (
+    <div className="min-h-screen bg-[#f8f9fc] text-slate-800">
+      {/* ================= HERO ================= */}
+      <section>
+        <Banner />
+      </section>
 
-    useEffect(() => {
-      const endTime = new Date();
-      endTime.setHours(endTime.getHours() + 5); // Flash sale ends in 5 hours
+      {/* ================= SHOPPING BENEFITS ================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
+        <div className="bg-white rounded-2xl shadow-md border border-slate-100">
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-slate-100">
+            {/* Benefit 1 */}
+            <div className="flex items-center gap-3 px-4 py-5 md:px-6">
+              <div className="w-11 h-11 rounded-full bg-indigo-50 flex items-center justify-center text-xl">
+                🚚
+              </div>
 
-      const interval = setInterval(() => {
-        const now = new Date();
-        const diff = endTime - now;
+              <div>
+                <h4 className="font-semibold text-sm text-slate-800">
+                  Free Delivery
+                </h4>
+                <p className="text-xs text-slate-500 mt-1">
+                  On orders above ₹499
+                </p>
+              </div>
+            </div>
 
-        if (diff <= 0) return clearInterval(interval);
+            {/* Benefit 2 */}
+            <div className="flex items-center gap-3 px-4 py-5 md:px-6">
+              <div className="w-11 h-11 rounded-full bg-purple-50 flex items-center justify-center text-xl">
+                ↩️
+              </div>
 
-        setTimeLeft({
-          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((diff / (1000 * 60)) % 60),
-          seconds: Math.floor((diff / 1000) % 60),
-        });
-      }, 1000);
+              <div>
+                <h4 className="font-semibold text-sm text-slate-800">
+                  Easy Returns
+                </h4>
+                <p className="text-xs text-slate-500 mt-1">
+                  7-day return policy
+                </p>
+              </div>
+            </div>
 
-      return () => clearInterval(interval);
-    }, []);
+            {/* Benefit 3 */}
+            <div className="flex items-center gap-3 px-4 py-5 md:px-6">
+              <div className="w-11 h-11 rounded-full bg-orange-50 flex items-center justify-center text-xl">
+                🔒
+              </div>
 
-    return (
-      <div className="bg-red-50 py-14 mt-12">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-10">
-            <h2 className="text-3xl font-semibold text-gray-800">
-              🔥 Flash Sale
-            </h2>
+              <div>
+                <h4 className="font-semibold text-sm text-slate-800">
+                  Secure Payment
+                </h4>
+                <p className="text-xs text-slate-500 mt-1">
+                  100% secure checkout
+                </p>
+              </div>
+            </div>
 
-            <div className="text-red-600 flex items-center gap-2 text-lg font-semibold">
-              Ends In:
-              <span className="px-3 py-1 bg-white shadow rounded-md">
-                {String(timeLeft.hours).padStart(2, "0")}
-              </span>
-              :
-              <span className="px-3 py-1 bg-white shadow rounded-md">
-                {String(timeLeft.minutes).padStart(2, "0")}
-              </span>
-              :
-              <span className="px-3 py-1 bg-white shadow rounded-md">
-                {String(timeLeft.seconds).padStart(2, "0")}
-              </span>
+            {/* Benefit 4 */}
+            <div className="flex items-center gap-3 px-4 py-5 md:px-6">
+              <div className="w-11 h-11 rounded-full bg-pink-50 flex items-center justify-center text-xl">
+                ⭐
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-sm text-slate-800">
+                  Quality Products
+                </h4>
+                <p className="text-xs text-slate-500 mt-1">
+                  Trusted by customers
+                </p>
+              </div>
             </div>
           </div>
-
-          {/* Flash Sale Products */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {featured.map((item) => (
-              <div
-                key={item._id}
-                className="bg-white shadow-md rounded-lg p-4 border border-red-200 hover:shadow-lg transition"
-              >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-48 object-contain rounded-md"
-                />
-
-                <h3 className="text-lg font-semibold text-gray-800 mt-3">
-                  {item.title}
-                </h3>
-
-                <div className="flex justify-between items-center mt-3">
-                  <span className="text-red-600 font-bold text-lg">
-                    ₹{(item.price * 0.8).toFixed(0)}
-                  </span>
-                  <span className="text-gray-400 line-through text-sm">
-                    ₹{item.price}
-                  </span>
-                </div>
-
-                <button className="mt-4 w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition">
-                  Buy Now
-                </button>
-              </div>
-            ))}
-          </div>
         </div>
-      </div>
-    );
-  };
+      </section>
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <Banner />
+      {/* ================= CATEGORIES ================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <p className="text-sm font-medium text-indigo-600">
+              Explore More
+            </p>
 
-      {/* Banner Slider */}
-      {/* <div className="max-w-7xl mx-auto px-6 py-6">
-        <Swiper
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          pagination={{ clickable: true }}
-          modules={[Pagination, Autoplay]}
-          className="rounded-lg shadow-lg"
-        >
-          <SwiperSlide>
-            <img
-              src="https://img.freepik.com/free-vector/gradient-shopping-discount-horizontal-sale-banner_23-2150321996.jpg?t=st=1762521216~exp=1762524816~hmac=9fb2e0df41193d062f9b556d095362c45f3bbcc2a7a90d16f9049339beb5ea47&w=1480"
-              alt="Banner 1"
-              className="w-full h-64 md:h-96 object-cover rounded-lg"
-            />
-          </SwiperSlide>
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mt-1">
+              Shop by Category
+            </h2>
+          </div>
 
-          <SwiperSlide>
-            <img
-              src="https://t4.ftcdn.net/jpg/06/00/62/29/240_F_600622958_qHd6apf685EV5vLguPsrQ1ZxzsAQfzPb.jpg"
-              alt="Banner 2"
-              className="w-full h-64 md:h-96 object-cover rounded-lg"
-            />
-          </SwiperSlide>
+          <Link
+            to="/products"
+            className="hidden sm:flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition"
+          >
+            View All
+            <span>→</span>
+          </Link>
+        </div>
 
-          <SwiperSlide>
-            <img
-              src="https://img.freepik.com/free-vector/flat-design-mega-sale-banner-template_23-2148970883.jpg"
-              alt="Banner 3"
-              className="w-full h-64 md:h-96 object-cover rounded-lg"
-            />
-          </SwiperSlide>
-        </Swiper>
-      </div> */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+          {[
+            {
+              name: "Mobiles",
+              icon: "📱",
+              discount: "Up to 40% Off",
+            },
+            {
+              name: "Electronics",
+              icon: "🎧",
+              discount: "Up to 50% Off",
+            },
+            {
+              name: "Fashion",
+              icon: "👕",
+              discount: "Up to 60% Off",
+            },
+            {
+              name: "Home",
+              icon: "🛋️",
+              discount: "Up to 40% Off",
+            },
+            {
+              name: "Beauty",
+              icon: "🧴",
+              discount: "Up to 35% Off",
+            },
+            {
+              name: "Sports",
+              icon: "⚽",
+              discount: "Up to 45% Off",
+            },
+            {
+              name: "Toys",
+              icon: "🧸",
+              discount: "Up to 50% Off",
+            },
+          ].map((category) => (
+            <Link
+              to="/products"
+              key={category.name}
+              className="group bg-white rounded-2xl border border-slate-100 p-4 text-center hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="w-16 h-16 mx-auto rounded-full bg-linear-to-br from-indigo-50 to-purple-50 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                {category.icon}
+              </div>
 
-      {/* Featured Section */}
-      <div className="max-w-7xl mx-auto px-6 py-14">
-        <h2 className="text-3xl font-semibold text-gray-800 text-center mb-10">
-          Featured Products
-        </h2>
+              <h3 className="font-semibold text-sm mt-3 text-slate-800">
+                {category.name}
+              </h3>
+
+              <p className="text-[11px] text-slate-500 mt-1">
+                {category.discount}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= FEATURED PRODUCTS ================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14">
+        <div className="flex items-end justify-between mb-7">
+          <div>
+            <p className="text-sm font-medium text-indigo-600">
+              Handpicked for you
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mt-1">
+              Featured Products
+            </h2>
+          </div>
+
+          <Link
+            to="/products"
+            className="hidden sm:flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition"
+          >
+            View All Products
+            <span className="text-lg">→</span>
+          </Link>
+        </div>
 
         {featured.length === 0 ? (
-          <p className="text-center text-gray-500">
-            Loading Featured Products...
-          </p>
+          <div className="bg-white rounded-2xl border border-slate-100 py-20 text-center">
+            <div className="text-4xl mb-3">🛍️</div>
+
+            <p className="text-slate-500">
+              Loading Featured Products...
+            </p>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {featured.map((item) => (
               <div
                 key={item._id}
-                className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition"
+                className="group bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-48 object-contain rounded-md"
-                />
-                <h3 className="text-lg font-semibold text-gray-800 mt-3">
-                  {item.title}
-                </h3>
-                <p className="text-gray-500 text-sm mt-1 line-clamp-2">
-                  {item.description}
-                </p>
-                <div className="flex justify-between items-center mt-3">
-                  <span className="text-indigo-600 font-semibold text-lg">
-                    ₹{item.price}
+                {/* Product Image */}
+                <Link
+                  to={`/product/${item._id}`}
+                  className="block relative bg-white"
+                >
+                  <div className="h-60 p-6 flex items-center justify-center">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+
+                  <span className="absolute top-4 left-4 bg-indigo-600 text-white text-[11px] font-semibold px-3 py-1 rounded-full">
+                    Featured
                   </span>
-                  <Link
-                    to={`/product/${item._id}`}
-                    className="text-sm text-indigo-600 hover:underline"
+
+                  <button
+                    type="button"
+                    className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-slate-500 hover:text-red-500 transition"
                   >
-                    View
-                  </Link>
+                    ♡
+                  </button>
+                </Link>
+
+                {/* Product Details */}
+                <div className="px-5 pb-5">
+                  <h3 className="font-semibold text-slate-900 truncate">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-sm text-slate-500 mt-2 line-clamp-2 `min-h-[40px]`">
+                    {item.description}
+                  </p>
+
+                  <div className="flex items-center justify-between mt-4">
+                    <div>
+                      <span className="text-lg font-bold text-indigo-600">
+                        ₹{item.price}
+                      </span>
+
+                      <span className="ml-2 text-xs text-slate-400 line-through">
+                        ₹{(item.price * 1.15).toFixed(0)}
+                      </span>
+                    </div>
+
+                    <Link
+                      to={`/product/${item._id}`}
+                      className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition"
+                    >
+                      View →
+                    </Link>
+                  </div>
+
+                  <div className="flex items-center gap-1 mt-3 text-xs text-slate-500">
+                    <span className="text-yellow-500">★</span>
+                    <span>4.5</span>
+                    <span>•</span>
+                    <span>120 reviews</span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        <div className="text-center mt-10">
+        <div className="flex justify-center mt-8 sm:hidden">
           <Link
             to="/products"
-            className="px-5 py-2 text-indigo-600 border border-indigo-600 rounded-md hover:bg-indigo-600 hover:text-white transition"
+            className="px-6 py-2.5 rounded-lg border border-indigo-600 text-indigo-600 font-medium hover:bg-indigo-600 hover:text-white transition"
           >
             View All Products
           </Link>
         </div>
-      </div>
+      </section>
 
-      <FlashSale />
+      {/* ================= PROMOTIONAL BANNER ================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14">
+        <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-indigo-700 via-purple-600 to-pink-500">
+          <div className="absolute -top-20 -right-20 w-72 h-72 bg-white/10 rounded-full" />
+          <div className="absolute -bottom-28 right-40 w-80 h-80 bg-white/10 rounded-full" />
+
+          <div className="relative px-7 py-10 md:px-12 md:py-12 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="text-white max-w-xl">
+              <span className="inline-block px-3 py-1 rounded-full bg-white/15 border border-white/20 text-xs font-medium mb-4">
+                Weekend Special Offers
+              </span>
+
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Big Savings Are Waiting
+              </h2>
+
+              <p className="mt-3 text-white/80 max-w-lg">
+                Discover amazing deals on top products and enjoy exclusive
+                discounts available only on ShopEase.
+              </p>
+
+              <Link
+                to="/products"
+                className="inline-flex items-center gap-2 mt-6 bg-white text-indigo-700 px-6 py-3 rounded-lg font-semibold hover:bg-slate-100 transition"
+              >
+                Shop Now
+                <span>→</span>
+              </Link>
+            </div>
+
+            <div className="text-7xl md:text-9xl opacity-90">
+              🛍️
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FLASH SALE ================= */}
+      <FlashSale featured={featured} />
+
+      {/* ================= TRUST SECTION ================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-slate-100">
+            <div className="p-6 text-center">
+              <div className="text-3xl mb-3">🛡️</div>
+
+              <h4 className="font-semibold text-slate-800">
+                100% Original
+              </h4>
+
+              <p className="text-xs text-slate-500 mt-1">
+                Genuine products
+              </p>
+            </div>
+
+            <div className="p-6 text-center">
+              <div className="text-3xl mb-3">🚚</div>
+
+              <h4 className="font-semibold text-slate-800">
+                Fast Delivery
+              </h4>
+
+              <p className="text-xs text-slate-500 mt-1">
+                On time, every time
+              </p>
+            </div>
+
+            <div className="p-6 text-center">
+              <div className="text-3xl mb-3">↩️</div>
+
+              <h4 className="font-semibold text-slate-800">
+                7-Day Returns
+              </h4>
+
+              <p className="text-xs text-slate-500 mt-1">
+                Easy returns
+              </p>
+            </div>
+
+            <div className="p-6 text-center">
+              <div className="text-3xl mb-3">💰</div>
+
+              <h4 className="font-semibold text-slate-800">
+                Best Prices
+              </h4>
+
+              <p className="text-xs text-slate-500 mt-1">
+                Guaranteed savings
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
+  );
+};
+
+/* =========================================================
+   FLASH SALE
+========================================================= */
+
+const FlashSale = ({ featured }) => {
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const endTime = new Date();
+    endTime.setHours(endTime.getHours() + 5);
+
+    const interval = setInterval(() => {
+      const now = new Date();
+      const diff = endTime - now;
+
+      if (diff <= 0) {
+        clearInterval(interval);
+        return;
+      }
+
+      setTimeLeft({
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <section className="mt-14 bg-linear-to-b from-red-50 to-white border-y border-red-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-8">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🔥</span>
+
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
+                Flash Sale
+              </h2>
+            </div>
+
+            <p className="text-sm text-slate-500 mt-1">
+              Grab these deals before they're gone!
+            </p>
+          </div>
+
+          {/* Timer */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-red-600">
+              Ends In:
+            </span>
+
+            <div className="flex items-center gap-1">
+              <span className="bg-white border border-red-100 shadow-sm rounded-lg px-3 py-2 text-red-600 font-bold">
+                {String(timeLeft.hours).padStart(2, "0")}
+              </span>
+
+              <span className="font-bold text-red-500">:</span>
+
+              <span className="bg-white border border-red-100 shadow-sm rounded-lg px-3 py-2 text-red-600 font-bold">
+                {String(timeLeft.minutes).padStart(2, "0")}
+              </span>
+
+              <span className="font-bold text-red-500">:</span>
+
+              <span className="bg-white border border-red-100 shadow-sm rounded-lg px-3 py-2 text-red-600 font-bold">
+                {String(timeLeft.seconds).padStart(2, "0")}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Products */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {featured.map((item) => (
+            <div
+              key={item._id}
+              className="bg-white rounded-2xl border border-red-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+            >
+              {/* Image */}
+              <div className="relative h-52 p-5 flex items-center justify-center">
+                <span className="absolute top-3 left-3 z-10 bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-md">
+                  20% OFF
+                </span>
+
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+
+              {/* Details */}
+              <div className="px-5 pb-5">
+                <h3 className="font-semibold text-slate-800 truncate">
+                  {item.title}
+                </h3>
+
+                <div className="flex items-center gap-1 mt-2 text-xs text-slate-500">
+                  <span className="text-yellow-500">★</span>
+                  <span>4.5</span>
+                  <span>•</span>
+                  <span>120 reviews</span>
+                </div>
+
+                <div className="flex items-center justify-between mt-4">
+                  <div>
+                    <span className="text-lg font-bold text-red-600">
+                      ₹{(item.price * 0.8).toFixed(0)}
+                    </span>
+
+                    <span className="ml-2 text-xs text-slate-400 line-through">
+                      ₹{item.price}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="mt-4 w-full bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg font-medium transition shadow-sm hover:shadow-md"
+                >
+                  Buy Now
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {/* Extra Offer Card */}
+          <div className="rounded-2xl bg-linear-to-br from-pink-50 to-red-50 border border-red-100 p-6 flex flex-col justify-center">
+            <span className="text-red-500 text-sm font-semibold">
+              Limited Time Offer
+            </span>
+
+            <h3 className="text-2xl font-bold text-slate-900 mt-2">
+              Extra 10% OFF
+            </h3>
+
+            <p className="text-sm text-slate-500 mt-2">
+              Get an additional discount on prepaid orders.
+            </p>
+
+            <div className="mt-5">
+              <span className="inline-block bg-white border border-red-200 rounded-lg px-3 py-2 text-sm font-semibold text-red-600">
+                PREPAID10
+              </span>
+            </div>
+
+            <Link
+              to="/products"
+              className="mt-5 text-sm font-semibold text-red-600 hover:text-red-700"
+            >
+              Explore Deals →
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 
